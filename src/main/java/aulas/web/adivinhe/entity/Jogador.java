@@ -1,18 +1,19 @@
 package aulas.web.adivinhe.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.find;
 import java.util.Date;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 /**
  * Representa um jogador no banco de dados.
@@ -23,15 +24,25 @@ import javax.persistence.Table;
 public class Jogador extends PanacheEntityBase {
     
     @Id
+    @NotNull
     public Integer codigo;
     
+    @NotNull
     public String apelido;
+
+    @NotNull
     public String nome;
+    
+    @NotNull
+    @Email
     public String email;
     
+    @NotNull
     @JsonbTransient
     public String senha;
     
+    @NotNull
+    @Past
     @Column(name = "data_nasc")
     public Date dataNasc;
     
