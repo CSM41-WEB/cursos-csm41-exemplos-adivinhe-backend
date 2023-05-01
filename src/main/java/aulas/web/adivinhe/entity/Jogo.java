@@ -1,17 +1,15 @@
 package aulas.web.adivinhe.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import java.util.Date;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 
 /**
  * Representa um jogo no banco de dados.
@@ -22,15 +20,11 @@ import javax.validation.constraints.PastOrPresent;
 public class Jogo extends PanacheEntityBase {
 
     @EmbeddedId
+    @Valid
     public JogoPK jogoPK;
     
     @NotNull
-    @PastOrPresent
-    @Column(name = "data_hora")
-    public Date dataHora;
-    
-    @NotNull
-    @Min(0)
+    @Min(value = 0, message = "Pontuação ${validatedValue} é inválida. A pontuação mínima permitida é {value}.")
     public Integer pontuacao;
     
     @ManyToOne
@@ -40,7 +34,6 @@ public class Jogo extends PanacheEntityBase {
 
     @Override
     public String toString() {
-        return "Jogo{" + "jogoPK=" + jogoPK + ", dataHora=" + dataHora + '}';
+        return "Jogo{" + "jogoPK=" + jogoPK + ", pontuacao=" + pontuacao + ", jogador=" + jogador + '}';
     }
-    
 }
