@@ -1,6 +1,5 @@
 package aulas.web.adivinhe;
 
-import aulas.web.adivinhe.entity.Jogador;
 import aulas.web.adivinhe.entity.Jogo;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
