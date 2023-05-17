@@ -17,6 +17,7 @@
         <quarkus.platform.version>3.0.1.Final</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+        <mariadb.host>localhost</mariadb.host>
     </properties>
     
     <dependencyManagement>
@@ -72,6 +73,13 @@
     
     <build>
         <finalName>adivinhe-backend</finalName>
+        
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         
         <plugins>
             <plugin>
@@ -140,7 +148,22 @@
             </activation>
             <properties>
                 <skipITs>false</skipITs>
+                <skipTests>true</skipTests>
                 <quarkus.package.type>native</quarkus.package.type>
+                <mariadb.host>mariadb</mariadb.host>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>jvm</id>
+            <activation>
+                <property>
+                    <name>jvm</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+                <mariadb.host>mariadb</mariadb.host>
             </properties>
         </profile>
     </profiles>
