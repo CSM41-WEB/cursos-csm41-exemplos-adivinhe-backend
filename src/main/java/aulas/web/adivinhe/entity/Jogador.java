@@ -1,7 +1,7 @@
 package aulas.web.adivinhe.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import java.util.Date;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import java.util.List;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
@@ -16,6 +16,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import java.util.Date;
 
 /**
  * Representa um jogador no banco de dados.
@@ -24,6 +25,8 @@ import jakarta.validation.constraints.Past;
 @Entity
 @Table(name = "jogador")
 public class Jogador extends PanacheEntityBase {
+    
+    public static final String DATA_NASC_PATTERN = "yyyy-MM-dd";
     
     @Id
     @NotNull
@@ -46,6 +49,7 @@ public class Jogador extends PanacheEntityBase {
     @NotNull
     @Past
     @Temporal(TemporalType.DATE)
+    @JsonbDateFormat(DATA_NASC_PATTERN)
     @Column(name = "data_nasc")
     public Date dataNasc;
     
