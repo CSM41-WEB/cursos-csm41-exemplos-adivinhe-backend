@@ -15,6 +15,12 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("/jogo")
 public class JogoResource {
@@ -22,6 +28,13 @@ public class JogoResource {
     public static final SimpleDateFormat DATA_JOGO_FORMAT = new SimpleDateFormat(Jogo.DATA_JOGO_PATTERN);
     public static final String URI_JOGO = "/jogo/info?jogador=%d&dataHora=%s";
     
+    @Operation(summary = "Lista de todos os jogos",
+               description = "Retorna a lista de todos os jogos de todos os jogadores")
+    @APIResponse(responseCode = "200",
+                 description = "Sucesso na obtenção da lista de jogos",
+                 content = @Content(mediaType = MediaType.APPLICATION_JSON,
+                                    schema = @Schema(implementation = Jogo[].class))
+                )
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,6 +43,13 @@ public class JogoResource {
         return Response.ok(jogos).build();
     }
     
+    @Operation(summary = "Lista de jogos de um jogador",
+               description = "Retorna a lista de jogos do jogador correspondente ao código")
+    @APIResponse(responseCode = "200",
+                 description = "Sucesso na obtenção da lista de jogos",
+                 content = @Content(mediaType = MediaType.APPLICATION_JSON,
+                                    schema = @Schema(implementation = Jogo[].class))
+                )
     @GET
     @Path("/jogador/{jogador}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -38,10 +58,20 @@ public class JogoResource {
         return Response.ok(jogos).build();
     }
     
+    @Operation(summary = "Informações de um jogo",
+               description = "Retorna os dados de um jogo específico, informado o código do jogador e data do jogo")
+    @APIResponse(responseCode = "200",
+                 description = "Sucesso na obtenção das informações do jogo",
+                 content = @Content(mediaType = MediaType.APPLICATION_JSON,
+                                    schema = @Schema(implementation = Jogo.class))
+    )
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response infoJogo(@QueryParam("jogador") Integer jogador, @QueryParam("dataHora") String dataHora)
+    public Response infoJogo(@Parameter(name = "jogador", description = "O código do jogador", example = "123")
+                             @QueryParam("jogador") Integer jogador,
+                             @Parameter(name = "dataHora", description = "Data e hora do jogo", example = "2023-05-27T13:14:15-0300")
+                             @QueryParam("dataHora") String dataHora)
             throws ParseException {
         var dh = DATA_JOGO_FORMAT.parse(dataHora);
         var jogoPK = new JogoPK(jogador, dh);
@@ -49,6 +79,11 @@ public class JogoResource {
         return Response.ok(j).build();
     }
     
+    @Operation(summary = "Registra um novo jogo",
+               description = "Registra um jogo para o jogador especificado")
+    @APIResponse(responseCode = "200",
+                 description = "Sucesso na obtenção das informações do jogo"
+    )
     @POST
     @Path("/new")
     @Produces(MediaType.APPLICATION_JSON)
