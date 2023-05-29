@@ -1,5 +1,6 @@
 package aula.web.adivinhe.ws;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -11,10 +12,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @Path("/status")
 @Tag(name = "Monitor")
+@PermitAll
 public class MonitorResource {
 
     @Operation(summary = "Verificação do status da aplicação",
-               description = "Um chamada bem-sucedida indica que a aplicação está respondendo")
+               description = "Uma chamada bem-sucedida indica que a aplicação está respondendo")
     @APIResponse(responseCode = "200",
                  content = @Content(mediaType = MediaType.TEXT_PLAIN))
     @GET

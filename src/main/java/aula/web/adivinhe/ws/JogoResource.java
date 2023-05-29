@@ -2,6 +2,7 @@ package aula.web.adivinhe.ws;
 
 import aulas.web.adivinhe.entity.Jogo;
 import aulas.web.adivinhe.entity.JogoPK;
+import jakarta.annotation.security.RolesAllowed;
 import java.net.URI;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -19,11 +20,10 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("/jogo")
-public class JogoResource {
+public class JogoResource extends BaseResource {
 
     public static final SimpleDateFormat DATA_JOGO_FORMAT = new SimpleDateFormat(Jogo.DATA_JOGO_PATTERN);
     public static final String URI_JOGO = "/jogo/info?jogador=%d&dataHora=%s";
@@ -38,6 +38,7 @@ public class JogoResource {
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public Response listJogos() {
         var jogos = Jogo.listAll();
         return Response.ok(jogos).build();
@@ -53,7 +54,9 @@ public class JogoResource {
     @GET
     @Path("/jogador/{jogador}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "jogador"})
     public Response listJogos(Integer jogador) {
+        verificaPermissao(jogador);
         var jogos = Jogo.list("jogoPK.jogador", jogador);
         return Response.ok(jogos).build();
     }
@@ -68,11 +71,13 @@ public class JogoResource {
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "jogador"})
     public Response infoJogo(@Parameter(name = "jogador", description = "O código do jogador", example = "123")
                              @QueryParam("jogador") Integer jogador,
                              @Parameter(name = "dataHora", description = "Data e hora do jogo", example = "2023-05-27T13:14:15-0300")
                              @QueryParam("dataHora") String dataHora)
             throws ParseException {
+        verificaPermissao(jogador);
         var dh = DATA_JOGO_FORMAT.parse(dataHora);
         var jogoPK = new JogoPK(jogador, dh);
         Jogo j = Jogo.findById(jogoPK);
@@ -89,7 +94,9 @@ public class JogoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
+    @RolesAllowed({"admin", "jogador"})
     public Response insertJogo(@Valid Jogo jogo) {
+        verificaPermissao(jogo.jogoPK.jogador);
         jogo.persist();
         String dataHora = DATA_JOGO_FORMAT.format(jogo.jogoPK.dataHora);
         String uri = String.format(URI_JOGO, jogo.jogoPK.jogador, dataHora);
