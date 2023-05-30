@@ -16,6 +16,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -100,6 +102,7 @@ public class JogoResource extends BaseResource {
         jogo.persist();
         String dataHora = DATA_JOGO_FORMAT.format(jogo.jogoPK.dataHora);
         String uri = String.format(URI_JOGO, jogo.jogoPK.jogador, dataHora);
+        System.out.println(uri);
         return Response.created(URI.create(uri)).build();
     }
 }
